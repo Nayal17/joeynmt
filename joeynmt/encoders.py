@@ -177,6 +177,7 @@ class TransformerEncoder(Encoder):
         num_layers: int = 8,
         num_heads: int = 4,
         dropout: float = 0.1,
+        multi_dropout = True,
         emb_dropout: float = 0.1,
         freeze: bool = False,
         **kwargs,
@@ -211,7 +212,16 @@ class TransformerEncoder(Encoder):
         ])
 
         self.pe = PositionalEncoding(hidden_size)
-        self.emb_dropout = nn.Dropout(p=emb_dropout)
+        if multi_dropout:
+            self.multi_dropout = multi_dropout
+            self.do1 = nn.Dropout(p=0.1)
+            self.do2 = nn.Dropout(p=0.2)
+            self.do3 = nn.Dropout(p=0.3)
+            self.do4 = nn.Dropout(p=0.4)
+            self.do5 = nn.Dropout(p=0.5)
+
+        else:
+            self.emb_dropout = nn.Dropout(p=emb_dropout)
 
         self.layer_norm = (
             nn.LayerNorm(hidden_size, eps=1e-6)
@@ -249,7 +259,17 @@ class TransformerEncoder(Encoder):
         x = self.pe(src_embed)  # add position encoding to word embeddings
         if kwargs.get("src_prompt_mask", None) is not None:  # add src_prompt_mask
             x = x + kwargs["src_prompt_mask"]
-        x = self.emb_dropout(x)
+
+        if self.multi_dropout:
+            x1 = self.do1(x)
+            x2 = self.do2(x)
+            x3 = self.do3(x)
+            x4 = self.do4(x)
+            x5 = self.do5(x)
+            x = (x1+x2+x3+x4+x5)/5
+
+        else:
+            x = self.emb_dropout(x)
 
         for layer in self.layers:
             x = layer(x, mask)
