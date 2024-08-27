@@ -211,8 +211,8 @@ class TransformerEncoder(Encoder):
         ])
 
         self.pe = PositionalEncoding(hidden_size)
-        if multi_dropout:
-            self.multi_dropout = kwargs.get("multi_dropout", "True")
+        self.multi_dropout = kwargs.get("multi_dropout", "True")
+        if self.multi_dropout:
             self.do1 = nn.Dropout(p=0.1)
             self.do2 = nn.Dropout(p=0.2)
             self.do3 = nn.Dropout(p=0.3)
