@@ -365,6 +365,7 @@ def build_model(
 
     # build encoder
     enc_dropout = enc_cfg.get("dropout", 0.0)
+    multi_dropout = enc_cfg.get("multi_dropout", "False")
     enc_emb_dropout = enc_cfg["embeddings"].get("dropout", enc_dropout)
     if enc_cfg.get("type", "recurrent") == "transformer":
         assert enc_cfg["embeddings"]["embedding_dim"] == enc_cfg["hidden_size"], (
@@ -376,6 +377,7 @@ def build_model(
             **enc_cfg,
             emb_size=emb_size,
             emb_dropout=enc_emb_dropout,
+            multi_dropout=multi_dropout,
             pad_index=src_pad_index,
         )
     else:
