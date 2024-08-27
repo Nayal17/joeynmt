@@ -177,7 +177,6 @@ class TransformerEncoder(Encoder):
         num_layers: int = 8,
         num_heads: int = 4,
         dropout: float = 0.1,
-        multi_dropout = True,
         emb_dropout: float = 0.1,
         freeze: bool = False,
         **kwargs,
@@ -213,7 +212,7 @@ class TransformerEncoder(Encoder):
 
         self.pe = PositionalEncoding(hidden_size)
         if multi_dropout:
-            self.multi_dropout = multi_dropout
+            self.multi_dropout = kwargs.get("multi_dropout", "True")
             self.do1 = nn.Dropout(p=0.1)
             self.do2 = nn.Dropout(p=0.2)
             self.do3 = nn.Dropout(p=0.3)
